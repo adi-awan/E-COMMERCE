@@ -22,7 +22,7 @@ from app.services.auth_service import (
 
 router = APIRouter(
     prefix="/auth",
-    tags=["Authentication"]
+    tags=["Auth"]
 )
 
 
