@@ -14,11 +14,19 @@ from app.routes.admin import router as admin_router
 from app.routes.analytics import router as analytics_router
 from app.routes.inventory import router as inventory_router
 from app.routes.admin import router as admin_router
-
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(product_router)
 app.include_router(auth_router)
