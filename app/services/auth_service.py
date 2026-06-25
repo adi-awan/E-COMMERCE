@@ -2,7 +2,7 @@ from fastapi import HTTPException
 
 from app.core.supabase import supabase
 
-from app.services.email_service import send_email
+# from app.services.email_service import send_email
 import secrets
 from datetime import datetime, timedelta
 from app.core.security import (
@@ -11,7 +11,7 @@ from app.core.security import (
     create_token
 )
 
-import asyncio
+# import asyncio
 
 
 
@@ -67,21 +67,21 @@ def register_user(data):
 
     # Send welcome email after successful registration
 
-    asyncio.run(
-        send_email(
+    # asyncio.run(
+    #     send_email(
 
-            data["email"],
+    #         data["email"],
 
-            "Welcome to Ecommerce",
+    #         "Welcome to Ecommerce",
 
-            f"""
-            <h1>Welcome {data['name']}</h1>
+    #         f"""
+    #         <h1>Welcome {data['name']}</h1>
 
-            <p>Your account has been created successfully.</p>
-            """
+    #         <p>Your account has been created successfully.</p>
+    #         """
 
-        )
-    )
+    #     )
+    # )
 
 
 
@@ -196,27 +196,27 @@ def forgot_password(email):
     )
 
 
-    asyncio.run(
+    # asyncio.run(
 
-        send_email(
+    #     send_email(
 
-            email,
+    #         email,
 
-            "Password Reset",
+    #         "Password Reset",
 
-            f"""
-            <h2>Password Reset</h2>
+    #         f"""
+    #         <h2>Password Reset</h2>
 
-            <p>
-            Your reset token:
-            </p>
+    #         <p>
+    #         Your reset token:
+    #         </p>
 
-            <b>{token}</b>
-            """
+    #         <b>{token}</b>
+    #         """
 
-        )
+    #     )
 
-    )
+    # )
 
 
     return {

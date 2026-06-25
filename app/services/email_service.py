@@ -2,29 +2,32 @@ from fastapi_mail import FastMail, MessageSchema
 from app.core.email import conf
 
 
+if conf is None:
+    return
 
-async def send_email(
-    email,
-    subject,
-    body
-):
+else:
+    async def send_email(
+        email,
+        subject,
+        body
+    ):
 
-    message = MessageSchema(
+        message = MessageSchema(
 
-        subject=subject,
+            subject=subject,
 
-        recipients=[
-            email
-        ],
+            recipients=[
+                email
+            ],
 
-        body=body,
+            body=body,
 
-        subtype="html"
-    )
+            subtype="html"
+        )
 
 
-    fm = FastMail(conf)
+        fm = FastMail(conf)
 
-    await fm.send_message(
-        message
-    )
+        await fm.send_message(
+            message
+        )

@@ -2,9 +2,9 @@ from app.core.supabase import supabase
 import uuid
 from app.services.cart_service import get_or_create_cart
 from app.services.coupon_service import get_coupon
-from app.services.email_service import send_email
+# from app.services.email_service import send_email
 
-import asyncio
+# import asyncio
 
 
 
@@ -190,29 +190,29 @@ def checkout(user_id, coupon_code=None):
         user = user_result.data[0]
 
 
-        asyncio.run(
+        # asyncio.run(
 
-            send_email(
+        #     send_email(
 
-                user["email"],
+        #         user["email"],
 
-                "Order Confirmed",
+        #         "Order Confirmed",
 
-                f"""
-                <h2>Your order is confirmed</h2>
+        #         f"""
+        #         <h2>Your order is confirmed</h2>
 
-                <p>
-                Order ID: {order_id}
-                </p>
+        #         <p>
+        #         Order ID: {order_id}
+        #         </p>
 
-                <p>
-                Total: {final_total}
-                </p>
-                """
+        #         <p>
+        #         Total: {final_total}
+        #         </p>
+        #         """
 
-            )
+        #     )
 
-        )
+        # )
 
 
 
