@@ -66,8 +66,9 @@ def get_all_products(
     return result.data
 
 
-def get_product(product_id: str):
-    response = (
+def get_product(product_id):
+
+    result = (
         supabase
         .table("products")
         .select("*")
@@ -75,7 +76,12 @@ def get_product(product_id: str):
         .execute()
     )
 
-    return response.data
+    if result.data:
+        return result.data[0]
+
+    return {
+        "message": "Product not found"
+    }
 
 
 def create_product(data):
