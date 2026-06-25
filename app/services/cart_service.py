@@ -122,20 +122,16 @@ def add_to_cart(user_id, data):
 
 def update_cart_item(user_id, item_id, quantity):
 
+    cart = get_or_create_cart(user_id)
+
     result = (
         supabase
         .table("cart_items")
         .update({
             "quantity": quantity
         })
-        .eq(
-            "id",
-            item_id
-        )
-        .eq(
-            "cart_id",
-            user_id
-        )
+        .eq("id", item_id)
+        .eq("cart_id", cart["id"])
         .execute()
     )
 
@@ -144,14 +140,15 @@ def update_cart_item(user_id, item_id, quantity):
 
 def remove_cart_item(user_id, item_id):
 
+    cart = get_or_create_cart(user_id)
+
     result = (
         supabase
         .table("cart_items")
         .delete()
         .eq("id", item_id)
-        .eq("cart_id", user_id)
+        .eq("cart_id", cart["id"])
         .execute()
     )
-
 
     return result.data
