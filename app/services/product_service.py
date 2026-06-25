@@ -2,13 +2,71 @@ from app.core.supabase import supabase
 
 
 def get_all_products(
-    page=1,
-    limit=10,
-    category=None,
-    min_price=None,
-    max_price=None,
-    sort_by=None
+page=1,
+limit=10,
+search=None,
+category=None,
+min_price=None,
+max_price=None,
+sort_by=None
 ):
+    query = (
+        supabase
+        .table("products")
+        .select("*")
+    )
+
+    if search:
+        query = query.ilike(
+            "name",
+            f"%{search}%"
+        )
+
+    if category:
+        query = query.eq(
+            "category",
+            category
+        )
+
+    if min_price is not None:
+        query = query.gte(
+            "price",
+            min_price
+        )
+
+    if max_price is not None:
+        query = query.lte(
+            "price",
+            max_price
+        )
+
+    if sort_by == "price_asc":
+        query = query.order("price")
+
+    elif sort_by == "price_desc":
+        query = query.order(
+            "price",
+            desc=True
+        )
+
+    elif sort_by == "newest":
+        query = query.order(
+            "created_at",
+            desc=True
+        )
+
+    start = (page - 1) * limit
+    end = start + limit - 1
+
+    result = (
+        query
+        .range(start, end)
+        .execute()
+    )
+
+    return result.data
+   
+
 
     query = (
         supabase

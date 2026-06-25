@@ -32,23 +32,25 @@ router = APIRouter(
 @router.get("/")
 def get_products(
 
-    page: int = 1,
+page: int = 1,
+limit: int = 10,
 
-    limit: int = 10,
+search: Optional[str] = None,
 
-    category: Optional[str] = None,
+category: Optional[str] = None,
 
-    min_price: Optional[float] = None,
+min_price: Optional[float] = None,
 
-    max_price: Optional[float] = None,
+max_price: Optional[float] = None,
 
-    sort_by: Optional[str] = None
+sort_by: Optional[str] = None
 
 ):
 
     return get_all_products(
         page,
         limit,
+        search,
         category,
         min_price,
         max_price,
