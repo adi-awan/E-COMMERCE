@@ -1,7 +1,9 @@
+aiosmtplib==5.1.2
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.14.0
-bcrypt==5.0.0
+bcrypt==4.0.1
+blinker==1.9.0
 certifi==2026.6.17
 cffi==2.0.0
 click==8.4.1
@@ -11,6 +13,7 @@ dnspython==2.8.0
 ecdsa==0.19.2
 email-validator==2.3.0
 fastapi==0.137.2
+fastapi-mail==1.6.5
 h11==0.16.0
 h2==4.3.0
 hpack==4.1.0
@@ -18,6 +21,8 @@ httpcore==1.0.9
 httpx==0.28.1
 hyperframe==6.1.0
 idna==3.18
+Jinja2==3.1.6
+MarkupSafe==3.0.3
 multidict==6.7.1
 packaging==26.2
 passlib==1.7.4
@@ -26,11 +31,14 @@ propcache==0.5.2
 pyasn1==0.6.3
 pycparser==3.0
 pydantic==2.13.4
+pydantic-settings==2.14.2
 pydantic_core==2.46.4
 PyJWT==2.13.0
 python-dotenv==1.2.2
 python-jose==3.5.0
+python-multipart==0.0.32
 realtime==2.31.0
+regex==2026.5.9
 rsa==4.9.1
 six==1.17.0
 starlette==1.3.1
@@ -44,5 +52,3 @@ typing_extensions==4.15.0
 uvicorn==0.49.0
 websockets==15.0.1
 yarl==1.24.2
-stripe
-fastapi-mail
