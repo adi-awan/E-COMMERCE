@@ -1,30 +1,30 @@
-from fastapi import HTTPException
+from fastapi import UploadFile, HTTPException
 from app.core.supabase import supabase
+import uuid
 
 
-def upload_image(file):
+def upload_image(file: UploadFile):
 
     try:
 
+        extension = file.filename.split(".")[-1]
+
+        filename = f"{uuid.uuid4()}.{extension}"
+
+        path = f"products/{filename}"
+
         file_bytes = file.file.read()
 
-        path = f"products/{file.filename}"
-
-        response = (
-            supabase
-            .storage
-            .from_("product-images")
-            .upload(
-                path,
-                file_bytes,
-                {
-                    "content-type": file.content_type,
-                    "upsert": "true"
-                }
-            )
+        supabase.storage.from_("product-images").upload(
+            path,
+            file_bytes,
+            {
+                "content-type": file.content_type,
+                "upsert": "true"
+            }
         )
 
-        url = (
+        image_url = (
             supabase
             .storage
             .from_("product-images")
@@ -32,12 +32,12 @@ def upload_image(file):
         )
 
         return {
-            "image_url": url
+            "image_url": image_url
         }
 
     except Exception as e:
 
-        print(e)
+        print("UPLOAD ERROR:", e)
 
         raise HTTPException(
             status_code=500,

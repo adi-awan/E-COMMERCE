@@ -8,12 +8,9 @@ router = APIRouter(
     tags=["Upload"]
 )
 
-@router.post("/")
-def upload_image(
+@router.post("/upload-image")
+def upload_product_image(
     file: UploadFile = File(...),
-    user = Depends(admin_required)
+    user=Depends(admin_required)
 ):
-
-    return {
-        "filename": file.filename
-    }
+    return upload_image(file)
