@@ -139,3 +139,56 @@ def delete_order(order_id):
     )
 
     return result.data
+def get_all_users():
+
+    result = (
+        supabase
+        .table("users")
+        .select("*")
+        .order("created_at", desc=True)
+        .execute()
+    )
+
+    return result.data
+
+
+def get_user(user_id):
+
+    result = (
+        supabase
+        .table("users")
+        .select("*")
+        .eq("id", user_id)
+        .single()
+        .execute()
+    )
+
+    return result.data
+
+
+def update_user_role(user_id, role):
+
+    result = (
+        supabase
+        .table("users")
+        .update({
+            "role": role
+        })
+        .eq("id", user_id)
+        .execute()
+    )
+
+    return result.data
+
+
+def delete_user(user_id):
+
+    result = (
+        supabase
+        .table("users")
+        .delete()
+        .eq("id", user_id)
+        .execute()
+    )
+
+    return result.data

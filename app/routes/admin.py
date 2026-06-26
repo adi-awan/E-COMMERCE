@@ -10,7 +10,11 @@ from app.services.admin_service import (
     get_all_orders,
     get_order,
     update_order_status,
-    delete_order
+    delete_order,
+    get_all_users,
+    get_user,
+    update_user_role,
+    delete_user
 )
 
 router = APIRouter(
@@ -73,3 +77,36 @@ def remove_order(
     user: Annotated[dict, Depends(admin_required)]
 ):
     return delete_order(order_id)
+@router.get("/users")
+def users(
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return get_all_users()
+
+
+@router.get("/users/{user_id}")
+def single_user(
+    user_id: str,
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return get_user(user_id)
+
+
+@router.put("/users/{user_id}")
+def change_role(
+    user_id: str,
+    data: dict,
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return update_user_role(
+        user_id,
+        data["role"]
+    )
+
+
+@router.delete("/users/{user_id}")
+def remove_user(
+    user_id: str,
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return delete_user(user_id)
