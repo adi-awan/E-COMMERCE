@@ -90,30 +90,14 @@ def low_stock_products():
     )
 
     return result.data
+
 def get_all_orders():
 
     result = (
         supabase
         .table("orders")
         .select("*")
-        .order(
-            "created_at",
-            desc=True
-        )
-        .execute()
-    )
-
-    return result.data
-
-
-def get_order(order_id):
-
-    result = (
-        supabase
-        .table("orders")
-        .select("*")
-        .eq("id", order_id)
-        .single()
+        .order("created_at", desc=True)
         .execute()
     )
 
@@ -128,6 +112,19 @@ def update_order_status(order_id, status):
         .update({
             "status": status
         })
+        .eq("id", order_id)
+        .execute()
+    )
+
+    return result.data
+
+
+def delete_order(order_id):
+
+    result = (
+        supabase
+        .table("orders")
+        .delete()
         .eq("id", order_id)
         .execute()
     )
