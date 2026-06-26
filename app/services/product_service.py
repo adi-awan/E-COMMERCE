@@ -1,5 +1,6 @@
 from app.core.supabase import supabase
 from fastapi import HTTPException
+from app.services.notification_service import create_notification
 
 def get_all_products(
 page=1,
@@ -168,7 +169,11 @@ def create_product(data):
         )
 
 
-def update_product(product_id: str, product_data: dict):
+def update_product(
+    product_id: str,
+    product_data: dict
+):
+
     response = (
         supabase
         .table("products")
@@ -177,8 +182,23 @@ def update_product(product_id: str, product_data: dict):
         .execute()
     )
 
-    return response.data
+    if (
+        "stock" in product_data and
+        product_data["stock"] <= 5
+    ):
 
+        create_notification(
+
+            "Low Stock",
+
+            f"{product_data.get('name', 'Product')} has only {product_data['stock']} items remaining.",
+
+            "low_stock"
+
+        )
+
+    return response.data
+    
 
 def delete_product(product_id: str):
     response = (

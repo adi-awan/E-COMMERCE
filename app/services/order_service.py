@@ -3,6 +3,7 @@ import uuid
 from app.services.cart_service import get_or_create_cart
 from app.services.coupon_service import get_coupon
 # from app.services.email_service import send_email
+from app.services.notification_service import create_notification
 
 # import asyncio
 
@@ -138,6 +139,11 @@ def checkout(user_id, coupon_code=None):
             "price": product["price"]
 
         }).execute()
+        create_notification(
+            "New Order",
+            f"Order #{order['id']} has been placed.",
+            "new_order"
+        )
 
 
 

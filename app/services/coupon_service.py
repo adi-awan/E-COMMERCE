@@ -1,5 +1,5 @@
 from app.core.supabase import supabase
-
+from app.services.notification_service import create_notification
 
 def get_coupon(code):
 
@@ -26,6 +26,11 @@ def create_coupon(data):
         .insert(data)
         .execute()
     )
+    create_notification(
+        "New Coupon",
+        f"{data['code']} coupon created.",
+        "coupon"
+)
 
     return result.data
 

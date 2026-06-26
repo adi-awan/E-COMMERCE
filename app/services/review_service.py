@@ -1,5 +1,5 @@
 from app.core.supabase import supabase
-
+from app.services.notification_service import create_notification
 
 def get_reviews(product_id):
 
@@ -30,8 +30,26 @@ def add_review(user_id, data):
         .execute()
     )
 
-    return result.data
+    product = (
+        supabase
+        .table("products")
+        .select("name")
+        .eq("id", data["product_id"])
+        .single()
+        .execute()
+    )
 
+    create_notification(
+
+        "New Review",
+
+        f"{product.data['name']} received a {data['rating']}-star review.",
+
+        "new_review"
+
+    )
+
+    return result.data
 
 def update_review(review_id, data):
 

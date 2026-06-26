@@ -1,5 +1,5 @@
 from app.core.supabase import supabase
-
+from app.services.notification_service import create_notification
 
 def get_inventory():
 
@@ -55,5 +55,13 @@ def update_stock(product_id, quantity):
         .eq("id", product_id)
         .execute()
     )
+    create_notification(
 
+    "Inventory Updated",
+
+    f"{product_name} inventory updated.",
+
+    "inventory"
+
+)
     return result.data
