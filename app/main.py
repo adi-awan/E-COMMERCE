@@ -18,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.category import router as category_router
 from app.routes.admin_reviews import router as admin_review_router
 from app.routes.shipping import router as shipping_router
+from app.routes.report import router as report_router
 
 app = FastAPI()
 app.add_middleware(
@@ -47,6 +48,7 @@ app.include_router(admin_router)
 app.include_router(category_router)
 app.include_router(admin_review_router)
 app.include_router(shipping_router)
+app.include_router(report_router)
 
 
 @app.get("/")
