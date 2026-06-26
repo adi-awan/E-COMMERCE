@@ -192,3 +192,104 @@ def delete_user(user_id):
     )
 
     return result.data
+
+def get_all_reviews():
+
+    result = (
+        supabase
+        .table("reviews")
+        .select(
+            """
+            *,
+            users(name),
+            products(name)
+            """
+        )
+        .order("created_at", desc=True)
+        .execute()
+    )
+
+    reviews = []
+
+    for review in result.data:
+
+        reviews.append({
+
+            "id": review["id"],
+
+            "rating": review["rating"],
+
+            "comment": review["comment"],
+
+            "created_at": review["created_at"],
+
+            "user_name": (
+                review["users"]["name"]
+                if review.get("users")
+                else "Unknown User"
+            ),
+
+            "product_name": (
+                review["products"]["name"]
+                if review.get("products")
+                else "Unknown Product"
+            )
+
+        })
+
+    return reviews
+
+
+def review_statistics():
+
+    result = (
+        supabase
+        .table("reviews")
+        .select("*")
+        .execute()
+    )
+
+    total = len(result.data)
+
+    if total == 0:
+
+        return {
+
+            "total_reviews": 0,
+
+            "average_rating": 0
+
+        }
+
+    avg = sum(
+
+        review["rating"]
+
+        for review in result.data
+
+    ) / total
+
+    return {
+
+        "total_reviews": total,
+
+        "average_rating": round(avg, 2)
+
+    }
+
+
+def admin_delete_review(review_id):
+
+    (
+        supabase
+        .table("reviews")
+        .delete()
+        .eq("id", review_id)
+        .execute()
+    )
+
+    return {
+
+        "message": "Review deleted"
+
+    }

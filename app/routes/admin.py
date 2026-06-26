@@ -14,7 +14,10 @@ from app.services.admin_service import (
     get_all_users,
     get_user,
     update_user_role,
-    delete_user
+    delete_user,
+    get_all_reviews,
+    review_statistics,
+    admin_delete_review
 )
 
 router = APIRouter(
@@ -110,3 +113,23 @@ def remove_user(
     user: Annotated[dict, Depends(admin_required)]
 ):
     return delete_user(user_id)
+@router.get("/reviews")
+def all_reviews(
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return get_all_reviews()
+
+
+@router.get("/reviews/stats")
+def review_stats(
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return review_statistics()
+
+
+@router.delete("/reviews/{review_id}")
+def delete_review(
+    review_id: str,
+    user: Annotated[dict, Depends(admin_required)]
+):
+    return admin_delete_review(review_id)
