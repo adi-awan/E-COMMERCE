@@ -1,4 +1,4 @@
-app/services/report_service.pyfrom app.core.supabase import supabase
+from app.core.supabase import supabase
 
 
 def sales_report():
