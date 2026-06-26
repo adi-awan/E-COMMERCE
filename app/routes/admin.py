@@ -68,14 +68,6 @@ def change_status(
         order_id,
         status
     )
-from app.services.admin_service import (
-    dashboard_stats,
-    recent_orders,
-    low_stock_products,
-    get_all_orders,
-    update_order_status,
-    delete_order
-)
 
 @router.get("/orders")
 def all_orders(
