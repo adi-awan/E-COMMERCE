@@ -15,7 +15,7 @@ from app.routes.analytics import router as analytics_router
 from app.routes.inventory import router as inventory_router
 from app.routes.admin import router as admin_router
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.routes.category import router as category_router
 
 app = FastAPI()
 app.add_middleware(
@@ -42,6 +42,7 @@ app.include_router(admin_router)
 app.include_router(analytics_router)
 app.include_router(inventory_router)
 app.include_router(admin_router)
+app.include_router(category_router)
 
 
 @app.get("/")
