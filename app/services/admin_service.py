@@ -27,35 +27,22 @@ def dashboard_stats():
     total_revenue = 0
 
     for order in orders.data:
-
-        total_revenue += (
-            order.get(
-                "total_amount",
-                0
-            )
+        total_revenue += order.get(
+            "total_amount",
+            0
         )
 
     return {
-
-        "total_users":
-        users.count,
-
-        "total_products":
-        products.count,
-
-        "total_orders":
-        len(orders.data),
-
-        "total_revenue":
-        total_revenue
-
+        "total_users": users.count,
+        "total_products": products.count,
+        "total_orders": len(orders.data),
+        "total_revenue": total_revenue
     }
 
 
 def recent_orders():
 
     result = (
-
         supabase
         .table("orders")
         .select("*")
@@ -65,7 +52,6 @@ def recent_orders():
         )
         .limit(10)
         .execute()
-
     )
 
     return result.data
@@ -74,7 +60,6 @@ def recent_orders():
 def low_stock_products():
 
     result = (
-
         supabase
         .table("products")
         .select("*")
@@ -82,14 +67,12 @@ def low_stock_products():
             "stock",
             5
         )
-        .order(
-            "stock"
-        )
+        .order("stock")
         .execute()
-
     )
 
     return result.data
+
 
 def get_all_orders():
 
@@ -97,14 +80,34 @@ def get_all_orders():
         supabase
         .table("orders")
         .select("*")
-        .order("created_at", desc=True)
+        .order(
+            "created_at",
+            desc=True
+        )
         .execute()
     )
 
     return result.data
 
 
-def update_order_status(order_id, status):
+def get_order(order_id):
+
+    result = (
+        supabase
+        .table("orders")
+        .select("*")
+        .eq("id", order_id)
+        .single()
+        .execute()
+    )
+
+    return result.data
+
+
+def update_order_status(
+    order_id,
+    status
+):
 
     result = (
         supabase
@@ -112,7 +115,10 @@ def update_order_status(order_id, status):
         .update({
             "status": status
         })
-        .eq("id", order_id)
+        .eq(
+            "id",
+            order_id
+        )
         .execute()
     )
 
@@ -125,7 +131,10 @@ def delete_order(order_id):
         supabase
         .table("orders")
         .delete()
-        .eq("id", order_id)
+        .eq(
+            "id",
+            order_id
+        )
         .execute()
     )
 

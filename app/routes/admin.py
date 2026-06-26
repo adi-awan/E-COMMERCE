@@ -9,7 +9,8 @@ from app.services.admin_service import (
     low_stock_products,
     get_all_orders,
     get_order,
-    update_order_status
+    update_order_status,
+    delete_order
 )
 
 router = APIRouter(
@@ -22,7 +23,6 @@ router = APIRouter(
 def stats(
     user: Annotated[dict, Depends(admin_required)]
 ):
-
     return dashboard_stats()
 
 
@@ -30,7 +30,6 @@ def stats(
 def latest_orders(
     user: Annotated[dict, Depends(admin_required)]
 ):
-
     return recent_orders()
 
 
@@ -38,13 +37,13 @@ def latest_orders(
 def low_stock(
     user: Annotated[dict, Depends(admin_required)]
 ):
-
     return low_stock_products()
+
+
 @router.get("/orders")
-def orders(
+def all_orders(
     user: Annotated[dict, Depends(admin_required)]
 ):
-
     return get_all_orders()
 
 
@@ -53,27 +52,7 @@ def order(
     order_id: str,
     user: Annotated[dict, Depends(admin_required)]
 ):
-
     return get_order(order_id)
-
-
-@router.put("/orders/{order_id}")
-def change_status(
-    order_id: str,
-    status: str,
-    user: Annotated[dict, Depends(admin_required)]
-):
-
-    return update_order_status(
-        order_id,
-        status
-    )
-
-@router.get("/orders")
-def all_orders(
-    user: Annotated[dict, Depends(admin_required)]
-):
-    return get_all_orders()
 
 
 @router.put("/orders/{order_id}")
