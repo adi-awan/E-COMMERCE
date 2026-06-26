@@ -3,13 +3,18 @@ from typing import Annotated
 
 from app.core.roles import admin_required
 
+from app.schemas.coupon_schema import (
+    CouponCreate,
+    CouponApply,
+)
+
 from app.services.coupon_service import (
     create_coupon,
     get_coupon,
     get_all_coupons,
     update_coupon,
     delete_coupon,
-    toggle_coupon
+    toggle_coupon,
 )
 
 router = APIRouter(
