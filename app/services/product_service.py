@@ -1,5 +1,5 @@
 from app.core.supabase import supabase
-
+from fastapi import HTTPException
 
 def get_all_products(
 page=1,
