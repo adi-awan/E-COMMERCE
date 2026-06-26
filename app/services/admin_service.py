@@ -90,3 +90,46 @@ def low_stock_products():
     )
 
     return result.data
+def get_all_orders():
+
+    result = (
+        supabase
+        .table("orders")
+        .select("*")
+        .order(
+            "created_at",
+            desc=True
+        )
+        .execute()
+    )
+
+    return result.data
+
+
+def get_order(order_id):
+
+    result = (
+        supabase
+        .table("orders")
+        .select("*")
+        .eq("id", order_id)
+        .single()
+        .execute()
+    )
+
+    return result.data
+
+
+def update_order_status(order_id, status):
+
+    result = (
+        supabase
+        .table("orders")
+        .update({
+            "status": status
+        })
+        .eq("id", order_id)
+        .execute()
+    )
+
+    return result.data
