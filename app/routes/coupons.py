@@ -12,12 +12,6 @@ from app.services.coupon_service import (
     toggle_coupon
 )
 
-from app.services.coupon_service import (
-    create_coupon,
-    get_coupon,
-    get_all_coupons
-)
-
 router = APIRouter(
     prefix="/coupons",
     tags=["Coupons"]
