@@ -142,16 +142,30 @@ def get_product(product_id):
     }
 
 
+from fastapi import HTTPException
+
 def create_product(data):
+    try:
+        print("DATA RECEIVED:", data)
 
-    result = (
-        supabase
-        .table("products")
-        .insert(data)
-        .execute()
-    )
+        result = (
+            supabase
+            .table("products")
+            .insert(data)
+            .execute()
+        )
 
-    return result.data
+        print("SUPABASE RESPONSE:", result.data)
+
+        return result.data
+
+    except Exception as e:
+        print("CREATE PRODUCT ERROR:", str(e))
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 def update_product(product_id: str, product_data: dict):
