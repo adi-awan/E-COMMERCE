@@ -13,7 +13,8 @@ from app.services.product_service import (
     update_product,
     delete_product,
     search_products,
-    filter_products
+    filter_products,
+    get_related_products
 )
 from app.core.dependencies import get_current_user
 from app.core.roles import admin_required
@@ -83,6 +84,9 @@ def add_product(
         product.model_dump()
     )
 
+@router.get("/{product_id}/related")
+def related_products(product_id: str):
+    return get_related_products(product_id)
 
 @router.put("/{product_id}")
 def edit_product(

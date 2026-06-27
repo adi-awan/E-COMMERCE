@@ -73,6 +73,33 @@ def get_all_products(
     )
 
     return result.data
+def get_related_products(product_id: str):
+
+    product = (
+        supabase
+        .table("products")
+        .select("category")
+        .eq("id", product_id)
+        .single()
+        .execute()
+    )
+
+    if not product.data:
+        return []
+
+    category = product.data["category"]
+
+    related = (
+        supabase
+        .table("products")
+        .select("*")
+        .eq("category", category)
+        .neq("id", product_id)
+        .limit(4)
+        .execute()
+    )
+
+    return related.data
 
 def get_product(product_id):
 
