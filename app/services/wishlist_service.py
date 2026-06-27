@@ -96,6 +96,11 @@ def remove_from_wishlist(user_id, item_id):
         .execute()
     )
 
+    if not result.data:
+        return {
+            "message": "Wishlist item not found."
+        }
+
     return {
-        "message": "Item removed from wishlist"
+        "message": "Item removed successfully."
     }
