@@ -31,22 +31,15 @@ router = APIRouter(
 
 @router.get("/")
 def get_products(
-
-page: int = 1,
-limit: int = 10,
-
-search: Optional[str] = None,
-
-category: Optional[str] = None,
-
-min_price: Optional[float] = None,
-
-max_price: Optional[float] = None,
-
-sort_by: Optional[str] = None
-
+    page: int = 1,
+    limit: int = 10,
+    search: Optional[str] = None,
+    category: Optional[str] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    in_stock: Optional[bool] = None,
+    sort_by: Optional[str] = None,
 ):
-
     return get_all_products(
         page,
         limit,
@@ -54,8 +47,11 @@ sort_by: Optional[str] = None
         category,
         min_price,
         max_price,
-        sort_by
+        in_stock,
+        sort_by,
     )
+
+
 
 @router.get("/search/")
 def search(
