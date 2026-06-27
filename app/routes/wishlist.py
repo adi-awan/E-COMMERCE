@@ -48,5 +48,6 @@ def delete_item(
 ):
 
     return remove_from_wishlist(
+        user["id"],
         item_id
     )
