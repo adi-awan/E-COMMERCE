@@ -83,13 +83,16 @@ def add_to_wishlist(user_id, product_id):
     return result.data
 
 
-def remove_from_wishlist(item_id):
+def remove_from_wishlist(user_id, item_id):
+
+    wishlist = get_or_create_wishlist(user_id)
 
     result = (
         supabase
         .table("wishlist_items")
         .delete()
         .eq("id", item_id)
+        .eq("wishlist_id", wishlist["id"])
         .execute()
     )
 
