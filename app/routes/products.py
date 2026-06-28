@@ -83,11 +83,6 @@ def add_product(
     return create_product(
         product.model_dump()
     )
-
-@router.get("/{product_id}/related")
-def related_products(product_id: str):
-    return get_related_products(product_id)
-
 @router.put("/{product_id}")
 def edit_product(
     product_id: str,
@@ -99,6 +94,9 @@ def edit_product(
         product.model_dump()
     )
 
+@router.get("/{product_id}/related")
+def related_products(product_id: str):
+    return get_related_products(product_id)
 
 @router.delete("/{product_id}")
 def remove_product(
