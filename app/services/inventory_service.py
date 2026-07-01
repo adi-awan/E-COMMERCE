@@ -33,13 +33,19 @@ def update_stock(product_id, quantity):
     product = (
         supabase
         .table("products")
-        .select("stock")
+        .select("stock,name")
         .eq("id", product_id)
         .single()
         .execute()
     )
 
+    if not product.data:
+        return {
+            "message": "Product not found"
+        }
+
     current_stock = product.data["stock"]
+    product_name = product.data["name"]
 
     new_stock = current_stock + quantity
 
@@ -55,13 +61,14 @@ def update_stock(product_id, quantity):
         .eq("id", product_id)
         .execute()
     )
-    create_notification(
 
-    "Inventory Updated",
+    try:
+        create_notification(
+            "Inventory Updated",
+            f"{product_name} inventory updated. Current stock: {new_stock}",
+            "inventory"
+        )
+    except Exception as e:
+        print(e)
 
-    f"{product_name} inventory updated.",
-
-    "inventory"
-
-)
     return result.data
