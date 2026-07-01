@@ -137,6 +137,23 @@ def update_cart_item(user_id, item_id, quantity):
 
     return result.data
 
+def update_cart_quantity(
+    cart_id,
+    quantity
+):
+
+    result = (
+        supabase
+        .table("cart")
+        .update({
+            "quantity": quantity
+        })
+        .eq("id", cart_id)
+        .execute()
+    )
+
+    return result.data
+
 
 def remove_cart_item(user_id, item_id):
 

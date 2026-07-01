@@ -74,3 +74,13 @@ def delete_item(
         user["id"],
         item_id
     )
+@router.patch("/{cart_id}")
+def update_quantity(
+    cart_id: str,
+    data: dict,
+    user=Depends(current_user)
+):
+    return update_cart_quantity(
+        cart_id,
+        data["quantity"]
+    )
