@@ -7,14 +7,14 @@ from app.core.dependencies import get_current_user
 from app.schemas.cart_schema import (
     CartItemCreate,
     CartItemUpdate,
-    update_cart_quantity
 )
 
 from app.services.cart_service import (
     get_cart,
     add_to_cart,
     update_cart_item,
-    remove_cart_item
+    remove_cart_item,
+    update_cart_quantity
 )
 
 
