@@ -6,7 +6,8 @@ from app.core.dependencies import get_current_user
 
 from app.schemas.cart_schema import (
     CartItemCreate,
-    CartItemUpdate
+    CartItemUpdate,
+    update_cart_quantity
 )
 
 from app.services.cart_service import (
@@ -74,13 +75,15 @@ def delete_item(
         user["id"],
         item_id
     )
+    
 @router.patch("/{cart_id}")
 def update_quantity(
     cart_id: str,
     data: dict,
-    user=Depends(current_user)
+    user: Annotated[dict, Depends(get_current_user)]
 ):
     return update_cart_quantity(
+        user["id"],
         cart_id,
         data["quantity"]
     )
