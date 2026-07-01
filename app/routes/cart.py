@@ -76,14 +76,14 @@ def delete_item(
         item_id
     )
     
-@router.patch("/{cart_id}")
+@router.patch("/{item_id}")
 def update_quantity(
-    cart_id: str,
+    item_id: str,
     data: dict,
     user: Annotated[dict, Depends(get_current_user)]
 ):
-    return update_cart_quantity(
+    return update_cart_item(
         user["id"],
-        cart_id,
+        item_id,
         data["quantity"]
     )
