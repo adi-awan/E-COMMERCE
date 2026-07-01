@@ -64,12 +64,12 @@ def update_stock(product_id, quantity):
     )
 
     try:
-        # create_notification(
-        #     "Inventory Updated",
-        #     f"{product_name} inventory updated. Current stock: {new_stock}",
-        #     "inventory"
-        # )
-        return result.data
+        create_notification(
+            "Inventory Updated",
+            f"{product_name} inventory updated. Current stock: {new_stock}",
+            "inventory"
+        )
+        
 
 
     except Exception as e:
