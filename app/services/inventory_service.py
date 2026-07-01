@@ -1,5 +1,6 @@
 from app.core.supabase import supabase
 from app.services.notification_service import create_notification
+import traceback
 
 def get_inventory():
 
@@ -63,12 +64,16 @@ def update_stock(product_id, quantity):
     )
 
     try:
-        create_notification(
-            "Inventory Updated",
-            f"{product_name} inventory updated. Current stock: {new_stock}",
-            "inventory"
-        )
+        # create_notification(
+        #     "Inventory Updated",
+        #     f"{product_name} inventory updated. Current stock: {new_stock}",
+        #     "inventory"
+        # )
+        return result.data
+
+
     except Exception as e:
-        print(e)
+        print("Notification Error:", e)
+        traceback.print_exc()
 
     return result.data
