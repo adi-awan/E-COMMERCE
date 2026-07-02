@@ -9,7 +9,7 @@ from app.services.notification_service import create_notification
 
 
 
-def checkout(user_id, coupon_code=None):
+def checkout(user_id, data):
 
 
     cart = get_or_create_cart(user_id)
@@ -69,30 +69,8 @@ def checkout(user_id, coupon_code=None):
             item["products"]["price"]
         )
 
-
-
     discount = 0
-
-
-    if coupon_code:
-
-        coupon = get_coupon(coupon_code)
-
-
-        if coupon:
-
-            discount = (
-                subtotal
-                *
-                coupon["discount_percent"]
-            ) / 100
-
-
-
-    final_total = subtotal - discount
-
-
-
+    final_total = subtotal
 
     order = (
 
@@ -121,48 +99,34 @@ def checkout(user_id, coupon_code=None):
 
     for item in cart_items.data:
 
-
         product = item["products"]
-
-
 
         supabase.table(
             "order_items"
         ).insert({
-
             "order_id": order_id,
-
             "product_id": product["id"],
-
             "quantity": item["quantity"],
-
             "price": product["price"]
-
         }).execute()
-        create_notification(
-            "New Order",
-            f"Order #{order['id']} has been placed.",
-            "new_order"
-        )
-
-
 
         # decrease stock
-
         supabase.table(
             "products"
         ).update({
-
-            "stock":
-            product["stock"] - item["quantity"]
-
+            "stock": product["stock"] - item["quantity"]
         }).eq(
             "id",
             product["id"]
         ).execute()
 
 
-
+    # Create ONE notification after the entire order is completed
+    create_notification(
+        "New Order",
+        f"Order #{order_id} has been placed.",
+        "new_order"
+    )
 
     # clear cart
 
@@ -172,7 +136,6 @@ def checkout(user_id, coupon_code=None):
         "cart_id",
         cart["id"]
     ).execute()
-
 
 
     # get user email

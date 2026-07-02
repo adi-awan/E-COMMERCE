@@ -30,9 +30,9 @@ def create_order(
 ):
 
     return checkout(
-        user["id"],
-        data.coupon_code
-    )
+    user["id"],
+    data
+)
 
 
 # Customer Order History
