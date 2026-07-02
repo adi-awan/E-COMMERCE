@@ -1,7 +1,6 @@
 from app.core.supabase import supabase
 import uuid
 from app.services.cart_service import get_or_create_cart
-from app.services.coupon_service import get_coupon
 # from app.services.email_service import send_email
 from app.services.notification_service import create_notification
 
