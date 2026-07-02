@@ -28,10 +28,9 @@ def create_order(
     data: CheckoutRequest,
     user: Annotated[dict, Depends(get_current_user)]
 ):
-
     return checkout(
         user["id"],
-        data
+        data.model_dump()
     )
 
 
