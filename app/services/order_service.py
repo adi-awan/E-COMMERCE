@@ -54,16 +54,13 @@ def checkout(user_id, data):
     # Create Order
 
     order = (
-        supabase
-        .table("orders")
-        .insert({
+        supabase.table("orders").insert({
             "user_id": user_id,
-            "payment_method": data.payment_method,
+            "payment_method": data["payment_method"],
             "total_amount": final_total,
             "status": "Pending",
             "payment_status": "Pending"
-        })
-        .execute()
+        }).execute()
     )
 
     order_id = order.data[0]["id"]
