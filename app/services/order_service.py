@@ -10,199 +10,142 @@ from app.services.notification_service import create_notification
 
 def checkout(user_id, data):
 
-
     cart = get_or_create_cart(user_id)
-
 
     cart_items = (
         supabase
         .table("cart_items")
-        .select(
-            """
+        .select("""
             id,
             quantity,
             products(*)
-            """
-        )
-        .eq(
-            "cart_id",
-            cart["id"]
-        )
+        """)
+        .eq("cart_id", cart["id"])
         .execute()
     )
 
-
     if not cart_items.data:
-
         return {
             "message": "Cart is empty"
         }
 
-
-
-    # stock checking
+    # Check stock
 
     for item in cart_items.data:
 
         product = item["products"]
 
-
         if product["stock"] < item["quantity"]:
-
             return {
                 "message":
                 f"{product['name']} has insufficient stock"
             }
 
-
-
-
     subtotal = 0
 
-
     for item in cart_items.data:
-
         subtotal += (
             item["quantity"]
-            *
-            item["products"]["price"]
+            * item["products"]["price"]
         )
 
-    discount = 0
     final_total = subtotal
 
-    order = (
+    # Create Order
 
+    order = (
         supabase
         .table("orders")
         .insert({
-
             "user_id": user_id,
-
+            "payment_method": data.payment_method,
             "total_amount": final_total,
-
             "status": "Pending",
-
             "payment_status": "Pending"
-
         })
         .execute()
-
     )
-
 
     order_id = order.data[0]["id"]
 
+    # Save Shipping Address
 
+    supabase.table("shipping_addresses").insert({
 
+        "order_id": order_id,
+
+        "full_name": data.full_name,
+
+        "email": data.email,
+
+        "phone": data.phone,
+
+        "city": data.city,
+
+        "address": data.address,
+
+        "postal_code": data.postal_code
+
+    }).execute()
+
+    # Save Order Items
 
     for item in cart_items.data:
 
         product = item["products"]
 
-        supabase.table(
-            "order_items"
-        ).insert({
+        supabase.table("order_items").insert({
+
             "order_id": order_id,
+
             "product_id": product["id"],
+
             "quantity": item["quantity"],
+
             "price": product["price"]
+
         }).execute()
 
-        # decrease stock
-        supabase.table(
-            "products"
-        ).update({
-            "stock": product["stock"] - item["quantity"]
+        # Update Stock
+
+        supabase.table("products").update({
+
+            "stock":
+            product["stock"] - item["quantity"]
+
         }).eq(
             "id",
             product["id"]
         ).execute()
 
+    # Notification
 
-    # Create ONE notification after the entire order is completed
     create_notification(
         "New Order",
         f"Order #{order_id} has been placed.",
         "new_order"
     )
 
-    # clear cart
+    # Clear Cart
 
-    supabase.table(
-        "cart_items"
-    ).delete().eq(
+    supabase.table("cart_items").delete().eq(
         "cart_id",
         cart["id"]
     ).execute()
 
-
-    # get user email
-
-    user_result = (
-
-        supabase
-        .table("users")
-        .select("email,name")
-        .eq(
-            "id",
-            user_id
-        )
-        .execute()
-
-    )
-
-
-    if user_result.data:
-
-        user = user_result.data[0]
-
-
-        # asyncio.run(
-
-        #     send_email(
-
-        #         user["email"],
-
-        #         "Order Confirmed",
-
-        #         f"""
-        #         <h2>Your order is confirmed</h2>
-
-        #         <p>
-        #         Order ID: {order_id}
-        #         </p>
-
-        #         <p>
-        #         Total: {final_total}
-        #         </p>
-        #         """
-
-        #     )
-
-        # )
-
-
-
     return {
 
-        "message":
-        "Order placed successfully",
+        "message": "Order placed successfully",
 
-        "order_id":
-        order_id,
+        "order_id": order_id,
 
-        "subtotal":
-        subtotal,
+        "subtotal": subtotal,
 
-        "discount":
-        discount,
+        "discount": 0,
 
-        "final_total":
-        final_total
+        "final_total": final_total
 
     }
-
 
 
 
