@@ -142,46 +142,76 @@ def checkout(user_id, data):
 def get_orders(user_id):
 
     result = (
+
         supabase
         .table("orders")
-        .select("*")
+        .select(
+            """
+            id,
+            total_amount,
+            status,
+            payment_status,
+            payment_method,
+            created_at
+            """
+        )
         .eq(
             "user_id",
             user_id
         )
+        .order(
+            "created_at",
+            desc=True
+        )
         .execute()
+
     )
 
     return result.data
-
-
 
 
 
 def get_order(order_id):
 
-    result = (
+    order = (
+        supabase
+        .table("orders")
+        .select("*")
+        .eq("id", order_id)
+        .single()
+        .execute()
+    )
+
+    if not order.data:
+        return {"message": "Order not found"}
+
+    shipping = (
+        supabase
+        .table("shipping_addresses")
+        .select("*")
+        .eq("order_id", order_id)
+        .single()
+        .execute()
+    )
+
+    items = (
         supabase
         .table("order_items")
-        .select(
-            """
+        .select("""
             id,
             quantity,
             price,
             products(*)
-            """
-        )
-        .eq(
-            "order_id",
-            order_id
-        )
+        """)
+        .eq("order_id", order_id)
         .execute()
     )
 
-    return result.data
-
-
-
+    return {
+        "order": order.data,
+        "shipping": shipping.data,
+        "items": items.data
+    }
 
 
 def update_order_status(
