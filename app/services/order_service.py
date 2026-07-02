@@ -55,12 +55,12 @@ def checkout(user_id, data):
 
     order = (
         supabase.table("orders").insert({
-            "user_id": user_id,
-            "payment_method": data["payment_method"],
-            "total_amount": final_total,
-            "status": "Pending",
-            "payment_status": "Pending"
-        }).execute()
+        "user_id": user_id,
+        "payment_method": data["payment_method"],
+        "payment_status": "Pending",
+        "total_amount": final_total,
+        "status": "Pending"
+    }).execute()
     )
 
     order_id = order.data[0]["id"]
@@ -68,21 +68,13 @@ def checkout(user_id, data):
     # Save Shipping Address
 
     supabase.table("shipping_addresses").insert({
-
         "order_id": order_id,
-
-        "full_name": data.full_name,
-
-        "email": data.email,
-
-        "phone": data.phone,
-
-        "city": data.city,
-
-        "address": data.address,
-
-        "postal_code": data.postal_code
-
+        "full_name": data["full_name"],
+        "email": data["email"],
+        "phone": data["phone"],
+        "city": data["city"],
+        "address": data["address"],
+        "postal_code": data["postal_code"],
     }).execute()
 
     # Save Order Items
