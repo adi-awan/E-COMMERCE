@@ -279,19 +279,22 @@ def track_order(order_id):
     result = (
         supabase
         .table("orders")
-        .select("*")
-        .eq(
-            "id",
-            order_id
-        )
+        .select("""
+            id,
+            status,
+            tracking_number,
+            created_at,
+            payment_status,
+            payment_method
+        """)
+        .eq("id", order_id)
+        .single()
         .execute()
     )
 
     if not result.data:
-
         return {
-            "message":
-            "Order not found"
+            "message": "Order not found"
         }
 
-    return result.data[0]
+    return result.data

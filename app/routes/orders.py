@@ -6,7 +6,9 @@ from app.core.roles import admin_required
 
 from app.schemas.checkout_schema import CheckoutRequest
 from app.schemas.order_status_schema import OrderStatusUpdate
+from fastapi.responses import StreamingResponse
 
+from app.services.invoice_service import generate_invoice
 from app.services.order_service import (
     checkout,
     get_orders,
@@ -89,4 +91,32 @@ def change_status(
     return update_order_status(
         order_id,
         data.status
+    )
+    
+@router.get("/{order_id}/invoice")
+def download_invoice(
+    order_id: str,
+    user=Depends(get_current_user)
+):
+
+    order = get_order_details(
+        order_id,
+        user["id"]
+    )
+
+    pdf = generate_invoice(order)
+
+    return StreamingResponse(
+
+        pdf,
+
+        media_type="application/pdf",
+
+        headers={
+
+            "Content-Disposition":
+            f"attachment; filename=invoice_{order_id}.pdf"
+
+        }
+
     )
