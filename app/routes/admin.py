@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from typing import Annotated
 
 from app.core.roles import admin_required
-
+from app.schemas.order_schema import OrderStatusUpdate
 from app.services.admin_service import (
     dashboard_stats,
     recent_orders,
@@ -66,12 +66,12 @@ def order(
 @router.put("/orders/{order_id}")
 def change_status(
     order_id: str,
-    status: dict,
+    data: OrderStatusUpdate,
     user: Annotated[dict, Depends(admin_required)]
 ):
     return update_order_status(
         order_id,
-        status["status"]
+        data.status
     )
 
 
@@ -81,6 +81,7 @@ def remove_order(
     user: Annotated[dict, Depends(admin_required)]
 ):
     return delete_order(order_id)
+
 @router.get("/users")
 def users(
     user: Annotated[dict, Depends(admin_required)]
