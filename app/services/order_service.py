@@ -248,9 +248,6 @@ def update_order_status(
 
     return result.data
 
-
-
-
 def get_all_orders():
 
     orders = (

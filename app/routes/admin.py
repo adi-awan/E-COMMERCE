@@ -7,10 +7,6 @@ from app.services.admin_service import (
     dashboard_stats,
     recent_orders,
     low_stock_products,
-    get_all_orders,
-    get_order,
-    update_order_status,
-    delete_order,
     get_all_users,
     get_user,
     update_user_role,
@@ -18,6 +14,11 @@ from app.services.admin_service import (
     get_all_reviews,
     review_statistics,
     admin_delete_review
+)
+from app.services.order_service import (
+    get_all_orders,
+    get_order,
+    update_order_status,
 )
 
 router = APIRouter(
