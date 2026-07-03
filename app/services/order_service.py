@@ -274,20 +274,20 @@ def get_all_orders():
 
         # Order Items
         items = (
-            supabase
-            .table("order_items")
-            .select("""
-                *,
-                products(
-                    id,
-                    name,
-                    image,
-                    price
-                )
-            """)
-            .eq("order_id", order["id"])
-            .execute()
-        )
+        supabase
+        .table("order_items")
+        .select("""
+            *,
+            products(
+                id,
+                name,
+                image_url,
+                price
+            )
+        """)
+        .eq("order_id", order["id"])
+        .execute()
+    )
 
         result.append({
             **order,
