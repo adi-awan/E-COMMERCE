@@ -16,7 +16,8 @@ from app.services.order_service import (
     track_order,
     get_all_orders,
     update_order_status,
-    get_order_details
+    get_order_details,
+    cancel_order
 )
 
 router = APIRouter(
@@ -127,4 +128,14 @@ def download_invoice(
 
         }
 
+    )
+    
+@router.put("/{order_id}/cancel")
+def cancel_user_order(
+    order_id: str,
+    user=Depends(get_current_user)
+):
+    return cancel_order(
+        order_id,
+        user["id"]
     )

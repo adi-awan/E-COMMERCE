@@ -339,3 +339,87 @@ def get_order_details(order_id, user_id):
         "items": items.data,
         "shipping": shipping.data
     }
+def cancel_order(order_id: str, user_id: str):
+
+    # Get order
+    order = (
+        supabase
+        .table("orders")
+        .select("*")
+        .eq("id", order_id)
+        .eq("user_id", user_id)
+        .single()
+        .execute()
+    )
+
+    if not order.data:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Order not found"
+        )
+
+    # Check status
+    if order.data["status"] != "Pending":
+
+        raise HTTPException(
+            status_code=400,
+            detail="Only pending orders can be cancelled."
+        )
+
+    # Get all order items
+    items = (
+        supabase
+        .table("order_items")
+        .select("*")
+        .eq("order_id", order_id)
+        .execute()
+    )
+
+    # Restore stock
+    for item in items.data:
+
+        product = (
+            supabase
+            .table("products")
+            .select("stock")
+            .eq("id", item["product_id"])
+            .single()
+            .execute()
+        )
+
+        new_stock = (
+            product.data["stock"]
+            + item["quantity"]
+        )
+
+        (
+            supabase
+            .table("products")
+            .update({
+                "stock": new_stock
+            })
+            .eq("id", item["product_id"])
+            .execute()
+        )
+
+    # Cancel order
+    (
+        supabase
+        .table("orders")
+        .update({
+            "status": "Cancelled"
+        })
+        .eq("id", order_id)
+        .execute()
+    )
+
+    create_notification(
+        "Order Cancelled",
+        f"Your order #{order_id} has been cancelled.",
+        "order"
+    )
+
+    return {
+        "message": "Order cancelled successfully."
+    }
