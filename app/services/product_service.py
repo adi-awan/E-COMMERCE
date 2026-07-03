@@ -207,3 +207,19 @@ def filter_products(category):
     )
 
     return result.data
+def get_product_suggestions(keyword: str):
+
+    result = (
+        supabase
+        .table("products")
+        .select("id, name, image_url, price")
+        .or_(
+            f"name.ilike.%{keyword}%,"
+            f"description.ilike.%{keyword}%,"
+            f"category.ilike.%{keyword}%"
+        )
+        .limit(8)
+        .execute()
+    )
+
+    return result.data

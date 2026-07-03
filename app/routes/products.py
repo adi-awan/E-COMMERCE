@@ -14,7 +14,8 @@ from app.services.product_service import (
     delete_product,
     search_products,
     filter_products,
-    get_related_products
+    get_related_products,
+    get_product_suggestions
 )
 from app.core.dependencies import get_current_user
 from app.core.roles import admin_required
@@ -97,6 +98,10 @@ def edit_product(
 @router.get("/{product_id}/related")
 def related_products(product_id: str):
     return get_related_products(product_id)
+
+@router.get("/suggestions")
+def suggestions(keyword: str):
+    return get_product_suggestions(keyword)
 
 @router.delete("/{product_id}")
 def remove_product(
