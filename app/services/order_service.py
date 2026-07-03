@@ -253,24 +253,52 @@ def update_order_status(
 
 def get_all_orders():
 
-    result = (
-
+    orders = (
         supabase
         .table("orders")
         .select("*")
+        .order("created_at", desc=True)
         .execute()
-
     )
 
-    return result.data
-def generate_tracking_number():
+    result = []
 
-    return str(
-        uuid.uuid4()
-    ).replace(
-        "-",
-        ""
-    )[:12].upper()
+    for order in orders.data:
+
+        # Shipping
+        shipping = (
+            supabase
+            .table("shipping_addresses")
+            .select("*")
+            .eq("order_id", order["id"])
+            .single()
+            .execute()
+        )
+
+        # Order Items
+        items = (
+            supabase
+            .table("order_items")
+            .select("""
+                *,
+                products(
+                    id,
+                    name,
+                    image,
+                    price
+                )
+            """)
+            .eq("order_id", order["id"])
+            .execute()
+        )
+
+        result.append({
+            **order,
+            "shipping": shipping.data,
+            "items": items.data
+        })
+
+    return result
 
 
 
