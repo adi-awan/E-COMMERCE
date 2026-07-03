@@ -1,4 +1,5 @@
 from app.core.supabase import supabase
+from fastapi import HTTPException
 import uuid
 from app.services.cart_service import get_or_create_cart
 # from app.services.email_service import send_email
@@ -212,7 +213,8 @@ def get_order(order_id):
         "shipping": shipping.data,
         "items": items.data
     }
-
+def generate_tracking_number():
+    return f"TRK-{uuid.uuid4().hex[:10].upper()}"
 
 def update_order_status(
     order_id,
@@ -225,7 +227,6 @@ def update_order_status(
 
 
     if status == "Shipped":
-
         update_data[
             "tracking_number"
         ] = generate_tracking_number()
@@ -250,13 +251,53 @@ def update_order_status(
 
 def get_all_orders():
 
-    orders = (
+    response = (
         supabase
         .table("orders")
-        .select("*")
+        .select("""
+            *,
+            shipping_addresses(
+                id,
+                full_name,
+                email,
+                phone,
+                city,
+                address,
+                postal_code
+            ),
+            order_items(
+                id,
+                quantity,
+                price,
+                products(
+                    id,
+                    name,
+                    image_url,
+                    price
+                )
+            )
+        """)
         .order("created_at", desc=True)
         .execute()
     )
+
+    result = []
+
+    for order in response.data:
+
+        result.append({
+            **order,
+            "shipping": (
+                order["shipping_addresses"][0]
+                if order.get("shipping_addresses")
+                else None
+            ),
+            "items": order.get("order_items", [])
+        })
+
+    return result
+
+    return orders.data
 
     result = []
 
