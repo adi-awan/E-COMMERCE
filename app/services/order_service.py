@@ -298,3 +298,44 @@ def track_order(order_id):
         }
 
     return result.data
+
+def get_order_details(order_id, user_id):
+
+    order = (
+        supabase
+        .table("orders")
+        .select("*")
+        .eq("id", order_id)
+        .eq("user_id", user_id)
+        .single()
+        .execute()
+    )
+
+    if not order.data:
+        return None
+
+    items = (
+        supabase
+        .table("order_items")
+        .select("""
+            *,
+            products(*)
+        """)
+        .eq("order_id", order_id)
+        .execute()
+    )
+
+    shipping = (
+        supabase
+        .table("shipping_addresses")
+        .select("*")
+        .eq("order_id", order_id)
+        .single()
+        .execute()
+    )
+
+    return {
+        "order": order.data,
+        "items": items.data,
+        "shipping": shipping.data
+    }

@@ -15,7 +15,8 @@ from app.services.order_service import (
     get_order,
     track_order,
     get_all_orders,
-    update_order_status
+    update_order_status,
+    get_order_details
 )
 
 router = APIRouter(
@@ -104,6 +105,13 @@ def download_invoice(
         user["id"]
     )
 
+    if not order:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Order not found"
+        )
+
     pdf = generate_invoice(order)
 
     return StreamingResponse(
@@ -115,7 +123,7 @@ def download_invoice(
         headers={
 
             "Content-Disposition":
-            f"attachment; filename=invoice_{order_id}.pdf"
+            f'attachment; filename="Invoice-{order_id}.pdf"'
 
         }
 
