@@ -19,9 +19,12 @@ def get_all_products(
     )
 
     if search:
-        query = query.ilike(
-            "name",
-            f"%{search}%"
+        query = query.or_(
+
+            f"name.ilike.%{search}%," +
+            f"description.ilike.%{search}%," +
+            f"category.ilike.%{search}%"
+
         )
 
     if category:
