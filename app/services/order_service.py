@@ -268,31 +268,31 @@ def get_all_orders():
             .table("shipping_addresses")
             .select("*")
             .eq("order_id", order["id"])
-            .single()
             .execute()
         )
 
         # Order Items
         items = (
-        supabase
-        .table("order_items")
-        .select("""
-            *,
-            products(
+            supabase
+            .table("order_items")
+            .select("""
                 id,
-                name,
-                image_url,
-                price
-            )
-        """)
-        .eq("order_id", order["id"])
-        .execute()
-    )
-
+                quantity,
+                price,
+                products(
+                    id,
+                    name,
+                    image_url,
+                    price
+                )
+            """)
+            .eq("order_id", order["id"])
+            .execute()
+        )
         result.append({
             **order,
-            "shipping": shipping.data,
-            "items": items.data
+            "shipping": shipping.data[0] if shipping.data else None,
+            "items": items.data or []
         })
 
     return result
