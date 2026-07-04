@@ -10,15 +10,12 @@ from app.schemas.user_schema import (
 )
 
 from app.services.auth_service import (
-    forgot_password,
-    reset_password
-)
-
-from app.services.auth_service import (
     register_user,
-    login_user
+    login_user,
+    forgot_password,
+    reset_password,
+    verify_email,
 )
-
 
 router = APIRouter(
     prefix="/auth",
@@ -77,3 +74,7 @@ def reset(
         data.token,
         data.new_password
     )
+
+@router.get("/verify-email")
+def verify(token: str):
+    return verify_email(token)
