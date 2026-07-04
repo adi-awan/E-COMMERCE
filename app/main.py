@@ -26,7 +26,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://e-commerce-frontend-git-main-adnans-projects-a61304e7.vercel.app",
+        "https://shop-hub-shopping-center.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
