@@ -167,15 +167,18 @@ def login_user(email, password):
 
     user = response.data[0]
 
-
-
     if not verify_password(
         password,
         user["password"]
     ):
-
         return None
 
+    # 🚨 NEW: Email verification check
+    if not user.get("email_verified", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Please verify your email before logging in."
+        )
 
 
     token = create_token(
