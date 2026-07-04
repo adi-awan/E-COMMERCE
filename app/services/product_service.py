@@ -2,6 +2,30 @@ from app.core.supabase import supabase
 from fastapi import HTTPException
 from app.services.notification_service import create_notification
 
+def add_rating_info(product):
+
+    reviews = (
+        supabase
+        .table("reviews")
+        .select("rating")
+        .eq("product_id", product["id"])
+        .execute()
+    ).data
+
+    if reviews:
+        average = sum(
+            review["rating"] for review in reviews
+        ) / len(reviews)
+
+        product["rating"] = round(average, 1)
+        product["review_count"] = len(reviews)
+
+    else:
+        product["rating"] = 0
+        product["review_count"] = 0
+
+    return product
+
 def get_all_products(
     page=1,
     limit=10,
@@ -75,7 +99,13 @@ def get_all_products(
         .execute()
     )
 
-    return result.data
+    products = result.data
+
+    for product in products:
+        add_rating_info(product)
+
+    return products
+
 def get_related_products(product_id: str):
 
     product = (
@@ -87,8 +117,12 @@ def get_related_products(product_id: str):
         .execute()
     )
 
-    if not product.data:
-        return []
+    products = related.data
+
+    for product in products:
+        add_rating_info(product)
+
+    return products
 
     category = product.data["category"]
 
@@ -115,7 +149,12 @@ def get_product(product_id):
     )
 
     if result.data:
-        return result.data[0]
+
+        product = result.data[0]
+
+        add_rating_info(product)
+
+        return product
 
     return {
         "message": "Product not found"
