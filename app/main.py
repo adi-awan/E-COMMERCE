@@ -27,6 +27,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://shop-hub-shopping-center.vercel.app",
+        "https://e-commerce-frontend-git-main-adnans-projects-a61304e7.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
