@@ -22,9 +22,7 @@ router = APIRouter(
 
 
 @router.get("/")
-def all_categories(
-    user: Annotated[dict, Depends(admin_required)]
-):
+def all_categories():
     return get_categories()
 
 

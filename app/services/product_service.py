@@ -1,26 +1,37 @@
 from app.core.supabase import supabase
 from fastapi import HTTPException
 from app.services.notification_service import create_notification
+from httpx import ReadError
 
 def add_rating_info(product):
 
-    reviews = (
-        supabase
-        .table("reviews")
-        .select("rating")
-        .eq("product_id", product["id"])
-        .execute()
-    ).data
+    try:
+
+        reviews = (
+            supabase
+            .table("reviews")
+            .select("rating")
+            .eq("product_id", product["id"])
+            .execute()
+        ).data
+
+    except Exception as e:
+        print(e)
+
+        product["rating"] = 0
+        product["review_count"] = 0
+
+        return product
 
     if reviews:
-        average = sum(
-            review["rating"] for review in reviews
-        ) / len(reviews)
 
-        product["rating"] = round(average, 1)
+        avg = sum(r["rating"] for r in reviews) / len(reviews)
+
+        product["rating"] = round(avg,1)
         product["review_count"] = len(reviews)
 
     else:
+
         product["rating"] = 0
         product["review_count"] = 0
 
@@ -117,13 +128,6 @@ def get_related_products(product_id: str):
         .execute()
     )
 
-    products = related.data
-
-    for product in products:
-        add_rating_info(product)
-
-    return products
-
     category = product.data["category"]
 
     related = (
@@ -136,7 +140,12 @@ def get_related_products(product_id: str):
         .execute()
     )
 
-    return related.data
+    products = related.data
+
+    for product in products:
+        add_rating_info(product)
+
+    return products
 
 def get_product(product_id):
 
