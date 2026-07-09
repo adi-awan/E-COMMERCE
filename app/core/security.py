@@ -1,10 +1,12 @@
 from passlib.context import CryptContext
-from jose import jwt
+from jose import jwt, JWTError
 from datetime import datetime, timedelta
 
+from app.core.config import settings
 
-SECRET_KEY = "mysecretkey"
-ALGORITHM = "HS256"
+
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
 
 
 pwd_context = CryptContext(
@@ -51,5 +53,5 @@ def decode_token(token):
             algorithms=[ALGORITHM]
         )
 
-    except:
+    except JWTError:
         return None
