@@ -144,7 +144,7 @@ def get_all_users():
     result = (
         supabase
         .table("users")
-        .select("*")
+        .select("id,name,email,role,email_verified,created_at")
         .order("created_at", desc=True)
         .execute()
     )
@@ -157,7 +157,7 @@ def get_user(user_id):
     result = (
         supabase
         .table("users")
-        .select("*")
+        .select("id,name,email,role,email_verified,created_at")
         .eq("id", user_id)
         .single()
         .execute()

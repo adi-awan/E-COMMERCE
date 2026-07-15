@@ -13,11 +13,12 @@ from app.services.admin_service import (
     delete_user,
     get_all_reviews,
     review_statistics,
-    admin_delete_review
+    admin_delete_review,
+    delete_order
 )
 from app.services.order_service import (
     get_all_orders,
-    get_order,
+    get_order_admin,
     update_order_status,
 )
 
@@ -60,7 +61,7 @@ def order(
     order_id: str,
     user: Annotated[dict, Depends(admin_required)]
 ):
-    return get_order(order_id)
+    return get_order_admin(order_id)
 
 
 @router.put("/orders/{order_id}")

@@ -167,6 +167,9 @@ def login_user(email, password):
 
     user = response.data[0]
 
+    if not verify_password(password, user["password"]):
+        return None
+
     token = create_token(
 
         {
@@ -295,6 +298,13 @@ def reset_password(token,new_password):
 
     user = result.data[0]
 
+    expiry = user.get("reset_token_expiry")
+
+    if not expiry or datetime.fromisoformat(expiry) < datetime.utcnow():
+        return {
+            "message":
+            "Reset link has expired"
+        }
 
     password = hash_password(
         new_password
@@ -308,7 +318,9 @@ def reset_password(token,new_password):
 
             "password": password,
 
-            "reset_token": None
+            "reset_token": None,
+
+            "reset_token_expiry": None
 
         })
         .eq(
