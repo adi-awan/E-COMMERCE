@@ -49,6 +49,7 @@ def edit_review(
 ):
     return update_review(
         review_id,
+        user["id"],
         review.model_dump()
     )
 
@@ -59,5 +60,6 @@ def remove_review(
     user: Annotated[dict, Depends(get_current_user)]
 ):
     return delete_review(
-        review_id
+        review_id,
+        user["id"]
     )

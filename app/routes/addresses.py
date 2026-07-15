@@ -49,6 +49,7 @@ def edit_address(
 ):
     return update_address(
         address_id,
+        user["id"],
         address.model_dump(exclude_none=True)
     )
 
@@ -59,5 +60,6 @@ def remove_address(
     user: Annotated[dict, Depends(get_current_user)]
 ):
     return delete_address(
-        address_id
+        address_id,
+        user["id"]
     )

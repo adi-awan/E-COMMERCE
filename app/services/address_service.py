@@ -28,28 +28,36 @@ def add_address(user_id, data):
     return result.data
 
 
-def update_address(address_id, data):
+def update_address(address_id, user_id, data):
 
     result = (
         supabase
         .table("addresses")
         .update(data)
         .eq("id", address_id)
+        .eq("user_id", user_id)
         .execute()
     )
+
+    if not result.data:
+        return {"message": "Address not found"}
 
     return result.data
 
 
-def delete_address(address_id):
+def delete_address(address_id, user_id):
 
-    (
+    result = (
         supabase
         .table("addresses")
         .delete()
         .eq("id", address_id)
+        .eq("user_id", user_id)
         .execute()
     )
+
+    if not result.data:
+        return {"message": "Address not found"}
 
     return {
         "message": "Address deleted"

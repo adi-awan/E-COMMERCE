@@ -51,28 +51,36 @@ def add_review(user_id, data):
 
     return result.data
 
-def update_review(review_id, data):
+def update_review(review_id, user_id, data):
 
     result = (
         supabase
         .table("reviews")
         .update(data)
         .eq("id", review_id)
+        .eq("user_id", user_id)
         .execute()
     )
+
+    if not result.data:
+        return {"message": "Review not found"}
 
     return result.data
 
 
-def delete_review(review_id):
+def delete_review(review_id, user_id):
 
-    (
+    result = (
         supabase
         .table("reviews")
         .delete()
         .eq("id", review_id)
+        .eq("user_id", user_id)
         .execute()
     )
+
+    if not result.data:
+        return {"message": "Review not found"}
 
     return {
         "message": "Review deleted"
