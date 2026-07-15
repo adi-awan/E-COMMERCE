@@ -171,8 +171,56 @@ def get_orders(user_id):
     return result.data
 
 
+def get_order(order_id, user_id):
+    """Customer-facing: only returns the order if it belongs to this user."""
 
-def get_order(order_id):
+    order = (
+        supabase
+        .table("orders")
+        .select("*")
+        .eq("id", order_id)
+        .eq("user_id", user_id)
+        .single()
+        .execute()
+    )
+
+    if not order.data:
+        raise HTTPException(
+            status_code=404,
+            detail="Order not found"
+        )
+
+    shipping = (
+        supabase
+        .table("shipping_addresses")
+        .select("*")
+        .eq("order_id", order_id)
+        .single()
+        .execute()
+    )
+
+    items = (
+        supabase
+        .table("order_items")
+        .select("""
+            id,
+            quantity,
+            price,
+            products(*)
+        """)
+        .eq("order_id", order_id)
+        .execute()
+    )
+
+    return {
+        "order": order.data,
+        "shipping": shipping.data,
+        "items": items.data
+    }
+
+
+def get_order_admin(order_id):
+    """Admin-only: fetch any order regardless of owner."""
 
     order = (
         supabase
@@ -213,6 +261,8 @@ def get_order(order_id):
         "shipping": shipping.data,
         "items": items.data
     }
+
+
 def generate_tracking_number():
     return f"TRK-{uuid.uuid4().hex[:10].upper()}"
 
@@ -296,48 +346,6 @@ def get_all_orders():
         })
 
     return result
-
-    return orders.data
-
-    result = []
-
-    for order in orders.data:
-
-        # Shipping
-        shipping = (
-            supabase
-            .table("shipping_addresses")
-            .select("*")
-            .eq("order_id", order["id"])
-            .execute()
-        )
-
-        # Order Items
-        items = (
-            supabase
-            .table("order_items")
-            .select("""
-                id,
-                quantity,
-                price,
-                products(
-                    id,
-                    name,
-                    image_url,
-                    price
-                )
-            """)
-            .eq("order_id", order["id"])
-            .execute()
-        )
-        result.append({
-            **order,
-            "shipping": shipping.data[0] if shipping.data else None,
-            "items": items.data or []
-        })
-
-    return result
-
 
 
 def track_order(order_id):
