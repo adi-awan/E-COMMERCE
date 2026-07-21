@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException
-from app.core.auth_dependency import get_current_user
+from app.core.dependencies import get_current_user
 
 
 def admin_required(
